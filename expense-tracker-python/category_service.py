@@ -5,7 +5,6 @@ def get_all_categories():
                 "Salary",
                 "Dividend",
                 "Government Payout"
-            
             ], 
         "out":
             [
@@ -13,11 +12,13 @@ def get_all_categories():
                 "Food (Delivery)",
                 "Food (Grocery)",
                 "Food (Eating Out)",
+                "Food (Hawker)"
                 "Insurance",
                 "Phone Bills",
                 "Investments",
                 "Shopping",
                 "Misc",
-                "Household amenities"
+                "Household amenities",
+                "Parents"
             ]
         }
