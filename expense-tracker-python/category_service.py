@@ -9,16 +9,18 @@ def get_all_categories():
         "out":
             [
                 "Tithing",
+                "Rent",
                 "Food (Delivery)",
                 "Food (Grocery)",
                 "Food (Eating Out)",
-                "Food (Hawker)"
+                "Food (Hawker)",
                 "Insurance",
                 "Phone Bills",
                 "Investments",
                 "Shopping",
                 "Misc",
                 "Household amenities",
-                "Parents"
+                "Parents",
+                "Savings"
             ]
         }

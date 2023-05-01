@@ -44,7 +44,8 @@ async def get_categories(transactionType: str, response_model=dict):
         raise HTTPException(status_code = 500, detail = traceback.format_exc()) 
     
 @app.get("/transactions")
-async def get_transactions(month_year: str | None = None, response_model=dict):
+async def get_transactions(person: str | None = None, month_year: str | None = None, response_model=dict):
+    print(month_year)
     if not month_year:
         try:
             return {"message": "All transactions retrieved", "transactions": get_all_transactions()}
@@ -52,7 +53,7 @@ async def get_transactions(month_year: str | None = None, response_model=dict):
             raise HTTPException(status_code = 500, detail = traceback.format_exc()) 
     else:
         try: 
-            return {"message": f"All transactions from the month of {month_year} retrieved", "transactions": get_transactions_by_month(month_year)}
+            return {"message": f"All transactions for {person} from the month of {month_year} retrieved", "transactions": get_transactions_by_month(person, month_year), "month_year": month_year}
         except Exception as e:
             raise HTTPException(status_code = 500, detail = traceback.format_exc()) 
 
