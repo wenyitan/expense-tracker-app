@@ -3,7 +3,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
-import { Button, TextField, Typography, IconButton, Switch } from '@mui/material';
+import { Button, TextField, Typography, IconButton, Switch, Paper } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -17,12 +17,12 @@ import MonthlyBreakdown from '../components/MonthlyBreakdown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import FormHelperText from '@mui/material/FormHelperText';
+import TransactionTable from '../components/TransactionTable';
 
 
 const dayjs = require('dayjs')
 
 function LogTransaction() {
-
     const [ amountInput, setAmountInput ] = useState("");
     const [ amountInputError, setAmountInputError ] = useState(false);
     const [ remarks, setRemarks ] = useState("");
@@ -35,7 +35,8 @@ function LogTransaction() {
     const [ switchChoice, setSwitchChoice ] = useState("Wen Yi");
     const [ categoryError, setCategoryError ] = useState(false);
     const [ amountInputErrorMessage, setAmountInputErrorMessage ] = useState("");
-    
+    const [ monthlyTransactions, setMonthlyTransactions ] = useState([]);
+
     let now = dayjs();
     const [ transactionDate, setTransactionDate ] = useState(now);
     const [ currentMonthView, setCurrentMonthView ] = useState(now.month(now.month()).year(now.year()).format("MMM-YYYY").toString());
@@ -138,6 +139,7 @@ function LogTransaction() {
         })
         .then((response)=> {
             console.log(response.data);
+            setMonthlyTransactions(response.data.transactions);
             let left = 0;
             response.data.transactions.forEach((transaction)=>{
                 transaction.type === "in" ? left += transaction.amount : left -= transaction.amount
@@ -272,6 +274,12 @@ function LogTransaction() {
                     <Typography>Tianyi</Typography>
                 </Stack>
                 <MonthlyBreakdown data={monthlyBreakdownData}/>
+            </Box>
+            <Box sx={{ width: "90%" }}>
+                <Paper sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+                    <Typography sx={{ marginBottom: 3 }}align="center" variant="h6"><strong>{currentMonthView}</strong>'s Transactions</Typography>
+                    <TransactionTable data={monthlyTransactions}/>
+                </Paper>
             </Box>
             
         </Box>
