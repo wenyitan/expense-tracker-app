@@ -74,7 +74,7 @@ function MonthlyBreakdown( {data} ) {
             dataKey="categoryTotal"
             onMouseEnter={onPieEnter}
           >{data.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={`hsl(${index * 40}, 80%, 75%)`} />
+            <Cell key={`cell-${index}`} fill={`hsl(${index * (360/data.length)}, 80%, 75%)`} />
           ))}</Pie>
         </PieChart>
       </ResponsiveContainer>
