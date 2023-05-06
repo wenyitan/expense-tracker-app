@@ -277,7 +277,7 @@ function LogTransaction() {
             </Box>
             <Box sx={{ width: "90%" }}>
                 <Paper sx={{ width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-                    <Typography sx={{ marginBottom: 3 }}align="center" variant="h6"><strong>{currentMonthView}</strong>'s Transactions</Typography>
+                    <Typography sx={{ marginBottom: 3, marginTop: 2 }}align="center" variant="h6"><strong>{currentMonthView}</strong>'s Transactions</Typography>
                     <TransactionTable data={monthlyTransactions}/>
                 </Paper>
             </Box>
