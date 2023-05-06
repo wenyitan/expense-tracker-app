@@ -16,6 +16,8 @@ import axios from 'axios';
 import MonthlyBreakdown from '../components/MonthlyBreakdown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import FormHelperText from '@mui/material/FormHelperText';
+
 
 const dayjs = require('dayjs')
 
@@ -24,16 +26,18 @@ function LogTransaction() {
     const [ amountInput, setAmountInput ] = useState("");
     const [ amountInputError, setAmountInputError ] = useState(false);
     const [ remarks, setRemarks ] = useState("");
-    const [ transactionDate, setTransactionDate ] = useState(null);
     const [ type, setType ] = useState("out");
     const [ person, setPerson ] = useState("Wen Yi")
     const [ categories, setCategories ] = useState([]);
     const [ category, setCategory ] = useState("");
     const [ monthlyBreakdownData, setMonthlyBreakdownData ] = useState([]);
     const [ currentMonthRemaining, setCurrentMonthRemaining ] = useState(0);
-    const [ switchChoice, setSwitchChoice ] = useState("Wen Yi") 
+    const [ switchChoice, setSwitchChoice ] = useState("Wen Yi");
+    const [ categoryError, setCategoryError ] = useState(false);
+    const [ amountInputErrorMessage, setAmountInputErrorMessage ] = useState("");
     
     let now = dayjs();
+    const [ transactionDate, setTransactionDate ] = useState(now);
     const [ currentMonthView, setCurrentMonthView ] = useState(now.month(now.month()).year(now.year()).format("MMM-YYYY").toString());
 
     const handleMonthAdd = () => {
@@ -56,6 +60,7 @@ function LogTransaction() {
         let input = event.target.value;
         setAmountInputError(!isNumeric(input));
         setAmountInput(input);
+        setAmountInputErrorMessage("Amount to be a number with at most 2 decimal points")
     }
 
     const handleTypeChange = (event) => {
@@ -69,6 +74,9 @@ function LogTransaction() {
     }
 
     const handleCategoryChange = (event) => {
+        if (event.target.value !== "None") {
+            setCategoryError(false);
+        }
         setCategory(event.target.value);
     } 
 
@@ -87,29 +95,38 @@ function LogTransaction() {
     }
 
     const resetForm = () => {
-        setAmountInput(0);
+        setAmountInput("");
         setCategory("");
         setType("out");
-        setTransactionDate(null);
+        setTransactionDate(now);
         setRemarks("")
     }
 
     const logTransaction = () => {
-        axios.post("http://127.0.0.1:8000/add-transaction", {
-            name: person,
-            type: type,
-            amount: amountInput,
-            date: transactionDate.format("DD/MM/YYYY").toString(),
-            category: category,
-            remarks: remarks
-        }).then((response) => {
-            console.log(response);
-        }).catch((error)=>{
-            console.log(error);
-        }).finally( () => {
-            resetForm();
-            getMonthTransaction();
-        })
+        if (amountInput === "") {
+            setAmountInputError(true);
+            setAmountInputErrorMessage("Amount cannot be empty");
+        }
+        if (category === ""){
+            setCategoryError(true);
+        }
+        if (category !== "" && amountInput !== "") {
+            axios.post("http://127.0.0.1:8000/add-transaction", {
+                name: person,
+                type: type,
+                amount: amountInput,
+                date: transactionDate.format("DD/MM/YYYY").toString(),
+                category: category,
+                remarks: remarks
+            }).then((response) => {
+                console.log(response);
+            }).catch((error)=>{
+                console.log(error);
+            }).finally( () => {
+                resetForm();
+                getMonthTransaction();
+            })
+        }
     }
 
     const getMonthTransaction = () => {
@@ -191,6 +208,7 @@ function LogTransaction() {
                                 value={amountInput}
                                 error={amountInputError}
                             />
+                            <FormHelperText sx={{ marginBottom: 1 }} error={amountInputError}>{amountInputError ? amountInputErrorMessage : ""}</FormHelperText>
                         </FormControl>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DemoContainer sx={{ marginBottom: 1, marginLeft: 5 }} components={['DatePicker']}>
@@ -211,18 +229,22 @@ function LogTransaction() {
                                 <MenuItem value="out">Out</MenuItem>
                             </Select>
                         </FormControl>
-                        <FormControl>
+                        <FormControl error={categoryError}>
                             <InputLabel sx={{ marginLeft: 5 }} id="demo-simple-select-label">Category</InputLabel>
                             <Select
                                 value={category}
                                 label="Category"
                                 onChange={handleCategoryChange}
                                 sx={{ width: 200, marginLeft: 5 }}
+                                
                             >
                                 {categories.map((category, key)=> (
                                     <MenuItem key={key} value={category}>{category}</MenuItem>
                                     ))}
                             </Select>
+                            <Box sx={{ marginBottom: 1, marginLeft: 5 }}>
+                                <FormHelperText align="right" error>{categoryError ? "Please choose a category" : ""}</FormHelperText>
+                            </Box>
                         </FormControl>
                         <TextField label="Remarks" sx={{ marginTop:1, marginBottom: 1, marginLeft: 5 }} multiline={true} rows={2} value={remarks} onChange={(event)=> {setRemarks(event.target.value)}}/>
                     </Box>
