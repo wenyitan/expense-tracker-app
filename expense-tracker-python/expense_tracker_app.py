@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from transaction_service import save_transaction as save
 from transaction_service import get_all_transactions, get_transactions_by_month
-from category_service import get_all_categories
 import traceback
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -35,13 +34,6 @@ async def add_transaction(addTransactionBody: AddTransactionBody):
         return {"message": "Transaction Saved", "transaction": savedTransaction}
     except Exception as e:
         raise HTTPException(status_code = 500, detail = traceback.format_exc())
-
-@app.get("/categories/{transactionType}")
-async def get_categories(transactionType: str, response_model=dict):
-    try:
-        return {"message": f"{transactionType} type categories retrieved", "categories": get_all_categories()[transactionType]}
-    except Exception as e:
-        raise HTTPException(status_code = 500, detail = traceback.format_exc()) 
     
 @app.get("/transactions")
 async def get_transactions(person: str | None = None, month_year: str | None = None, response_model=dict):
