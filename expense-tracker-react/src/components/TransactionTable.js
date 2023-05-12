@@ -12,10 +12,11 @@ const TransactionTable = ({data}) => {
     }
 
     return (
-        <TableContainer sx={{ width: "90%" }}component={Paper}>
+        <TableContainer sx={{ marginBottom: 3, width: "100%" }} component={Paper}>
             <Table size="small">
                 <TableHead>
                     <TableRow>
+                        <TableCell align="center">No.</TableCell>
                         <TableCell align="center">Name</TableCell>
                         <TableCell align="center">Type</TableCell>
                         <TableCell align="center">Amount ($)</TableCell>
@@ -28,7 +29,8 @@ const TransactionTable = ({data}) => {
                     {data.sort((transaction1, transaction2) => sortByDateThenById(transaction1, transaction2))
                         .map((transaction, key) => {
                             return (
-                                <TableRow>
+                                <TableRow key={key}>
+                                    <TableCell align="center">{key+1}.</TableCell>
                                     <TableCell align="center">{transaction.name}</TableCell>
                                     <TableCell align="center">{transaction.type.charAt(0).toUpperCase() + transaction.type.substring(1)}</TableCell>
                                     <TableCell align="center">${transaction.amount}</TableCell>
