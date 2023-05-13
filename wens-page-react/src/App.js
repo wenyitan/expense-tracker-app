@@ -1,14 +1,20 @@
 import './App.css';
 import Home from "./pages/Home";
-import { Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LogTransaction from "./pages/LogTransaction";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/log-transactions" element={<LogTransaction />} />
-    </Routes>
+    <Router>
+      <div>
+        <Navbar />
+      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/log-transactions" element={<LogTransaction />} />
+      </Routes>
+    </Router>
   );
 }
 
