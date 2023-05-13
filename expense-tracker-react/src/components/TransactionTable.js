@@ -15,21 +15,21 @@ const TransactionTable = ({data}) => {
         <TableContainer sx={{ marginBottom: 3, width: "100%" }} component={Paper}>
             <Table size="small">
                 <TableHead>
-                    <TableRow>
-                        <TableCell align="center">No.</TableCell>
-                        <TableCell align="center">Name</TableCell>
-                        <TableCell align="center">Type</TableCell>
-                        <TableCell align="center">Amount ($)</TableCell>
-                        <TableCell align="center">Date</TableCell>
-                        <TableCell align="center">Category</TableCell>
-                        <TableCell align="center">Remarks</TableCell>
+                    <TableRow> 
+                        <TableCell variant="head" align="center">No.</TableCell>
+                        <TableCell variant="head" align="center">Name</TableCell>
+                        <TableCell variant="head" align="center">Type</TableCell>
+                        <TableCell variant="head" align="center">Amount ($)</TableCell>
+                        <TableCell variant="head" align="center">Date</TableCell>
+                        <TableCell variant="head" align="center">Category</TableCell>
+                        <TableCell variant="head" align="center">Remarks</TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
                     {data.sort((transaction1, transaction2) => sortByDateThenById(transaction1, transaction2))
                         .map((transaction, key) => {
                             return (
-                                <TableRow key={key}>
+                                <TableRow hover key={key}>
                                     <TableCell align="center">{key+1}.</TableCell>
                                     <TableCell align="center">{transaction.name}</TableCell>
                                     <TableCell align="center">{transaction.type.charAt(0).toUpperCase() + transaction.type.substring(1)}</TableCell>

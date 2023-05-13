@@ -21,7 +21,12 @@ import TransactionTable from '../components/TransactionTable';
 import PropTypes from 'prop-types';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Slider from '@mui/material/Slider';
+
+
+
 import { categoriesIn, categoriesOut } from '../categories';
+import MonthlyTrend from '../components/MonthlyTrend';
 
 
 const dayjs = require('dayjs')
@@ -32,17 +37,14 @@ function LogTransaction() {
     const [ remarks, setRemarks ] = useState("");
     const [ type, setType ] = useState("out");
     const [ person, setPerson ] = useState("Wen Yi")
-    const [ categories, setCategories ] = useState([]);
     const [ category, setCategory ] = useState("");
     const [ monthlyBreakdownData, setMonthlyBreakdownData ] = useState([]);
-    const [ currentMonthRemaining, setCurrentMonthRemaining ] = useState(0);
     const [ switchChoice, setSwitchChoice ] = useState("Wen Yi");
     const [ categoryError, setCategoryError ] = useState(false);
     const [ amountInputErrorMessage, setAmountInputErrorMessage ] = useState("");
     const [ monthlyTransactions, setMonthlyTransactions ] = useState([]);
-    const [ wensTrend, setWensTrend ] = useState([]);
-    const [ tiansTrend, setTiansTrend ] = useState([]);
-    
+    const [ monthlyTrend, setMonthlyTrend ] = useState([]);
+    const [ sliderValue, setSliderValue ] = useState(6);
 
     const [value, setValue] = useState(0);
 
@@ -112,7 +114,6 @@ function LogTransaction() {
 
     const handleTypeChange = (event) => {
         setCategory("");
-        console.log(event.target.value);
         setType(event.target.value);
     }
     
@@ -129,16 +130,6 @@ function LogTransaction() {
 
     const handleDateInput = (newValue) => {
         setTransactionDate(newValue);
-    }
-
-    const getCategories = () => {
-        axios.get(`http://127.0.0.1:8000/categories/${type}`)
-            .then((response) => {
-                setCategories(response.data.categories);
-            })
-            .catch((error)=>{
-                console.log(error);
-            })
     }
 
     const resetForm = () => {
@@ -176,22 +167,28 @@ function LogTransaction() {
         }
     }
 
+    function valuetext(value) {
+        return `${value}°C`;
+      }
+      
+
     const getAllTransactions = () =>{
         axios.get("http://localhost:8000/transactions")
         .then((response)=> {
-            const allTransactions = response.data.transactions
-            console.log(allTransactions);
+            const allTransactions = response.data.transactions.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? 1 : -1})
             const names = ["Wen Yi", "Tianyi"]
-            const wensTrend = [];
-            const tiansTrend = [];
-            names.forEach((name)=>{
-                const transactions = allTransactions.filter((transaction)=>{return transaction.name === name})
-                let start = dayjs(transactions[0].date, "DD/MM/YYYY");
-                while (start.isBefore(now.add(1, "month"))) {
-                    const monthTransactions = transactions.filter((transaction)=>{return dayjs(transaction.date, "DD/MM/YYYY").isSame(start, 'month')});
+            const trend = [];
+            let start = dayjs(allTransactions[0].date, "DD/MM/YYYY");
+            while (start.isBefore(now)) {
+                const monthTransactions = allTransactions.filter((transaction)=>{return dayjs(transaction.date, "DD/MM/YYYY").isSame(start, 'month')});
+                const monthRecordObj = {
+                    monthYear: start.format("MMM YYYY"),
+                }
+                names.forEach((name)=>{
+                    const transactions = monthTransactions.filter((transaction)=>{return transaction.name === name})
                     let totalIncome = 0;
                     let totalExpense = 0;
-                    monthTransactions.forEach((transaction)=>{
+                    transactions.forEach((transaction)=>{
                         if (transaction.type === "in") {
                             totalIncome += transaction.amount;
                         } else {
@@ -201,20 +198,18 @@ function LogTransaction() {
                         }
                     })
                     let totalSavings = totalIncome - totalExpense;
-                    const monthRecordObj = {
-                        monthYear: start.format("MMM YYYY"),
-                        totalIncome: Math.round(totalIncome*100)/100,
-                        totalExpense: Math.round(totalExpense*100)/100,
-                        totalSavings: Math.round(totalSavings*100)/100
-                    }
-                    name === "Wen Yi" ? wensTrend.push(monthRecordObj) : tiansTrend.push(monthRecordObj);
-                    start = start.add(1, "month");
-                }
-            })
-            console.log(wensTrend);
-            console.log(tiansTrend);
+                    const nameLabel = name === "Wen Yi" ? "wens" : "tians"
+                    monthRecordObj[nameLabel+"TotalIncome"] = Math.round(totalIncome*100)/100;
+                    monthRecordObj[nameLabel+"TotalExpense"] = Math.round(totalExpense*100)/100;
+                    monthRecordObj[nameLabel+"TotalSavings"] = Math.round(totalSavings*100)/100;
+                })
+                trend.push(monthRecordObj);
+                start = start.add(1, "month");
+            }
+            setMonthlyTrend(trend);
         })
     }
+    
 
     const getMonthTransaction = () => {
         axios.get("http://localhost:8000/transactions", {
@@ -224,15 +219,12 @@ function LogTransaction() {
             }
         })
         .then((response)=> {
-            console.log(response.data);
             setMonthlyTransactions(response.data.transactions);
             let left = 0;
             response.data.transactions.forEach((transaction)=>{
                 transaction.type === "in" ? left += transaction.amount : left -= transaction.amount
             })
-            if (now.format("MMM-YYYY") === response.data.month_year) {
-                setCurrentMonthRemaining(Math.round(left*100)/100);
-            }
+
             let monthlyCategories = [];
             response.data.transactions.filter((transaction)=>transaction.type === "out").forEach((transaction)=> {
                 if (!monthlyCategories.includes(transaction.category)) {
@@ -253,10 +245,6 @@ function LogTransaction() {
             console.log(error);
         })
     }
-
-    useEffect(()=> {
-        getCategories();
-    }, [type]);
 
     useEffect(()=> {
         getAllTransactions();
@@ -388,16 +376,26 @@ function LogTransaction() {
                             <Tab label="Item Three" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
-                            <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center" variant="h6"><strong>{currentMonthView}</strong>'s Transactions</Typography>
-                            <TransactionTable data={monthlyTransactions}/>
+                            <Box sx={{ width: 1300, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
+                                <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>{currentMonthView}</strong>'s Transactions</Typography>
+                                <TransactionTable data={monthlyTransactions}/>
+                            </Box>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
-                            <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center" variant="h6">Saving trend</Typography>
-
-                            Item Two
+                            <Box sx={{ width: 1300, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
+                                <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>Saving trend</strong></Typography>
+                                <Box sx={{ width: 200, marginBottom: 2 }}>
+                                    {/* <Typography align="center">Showing {sliderValue} months</Typography> */}
+                                </Box>
+                                <MonthlyTrend trend={monthlyTrend.slice(monthlyTrend.length-6)}/>
+                            </Box>
                         </TabPanel>
                         <TabPanel value={value} index={2}>
                             Item Three
+                            <Box sx={{ border: "1px solid black", width: 1300, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
+
+                            </Box>
+
                         </TabPanel>
                     </Box>
                 </Paper>
