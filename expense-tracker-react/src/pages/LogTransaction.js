@@ -383,10 +383,7 @@ function LogTransaction() {
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Box sx={{ width: 1300, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
-                                <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>Saving trend</strong></Typography>
-                                <Box sx={{ width: 200, marginBottom: 2 }}>
-                                    {/* <Typography align="center">Showing {sliderValue} months</Typography> */}
-                                </Box>
+                                <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>Savings trend</strong></Typography>
                                 <MonthlyTrend trend={monthlyTrend.slice(monthlyTrend.length-6)}/>
                             </Box>
                         </TabPanel>

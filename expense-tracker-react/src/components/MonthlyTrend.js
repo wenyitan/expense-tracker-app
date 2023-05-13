@@ -19,7 +19,7 @@ function MonthlyTrend ({ trend }) {
                   <Typography>Wen Yi's Savings: ${payload[0].value}</ Typography>
                   <Typography>Wen Yi's Spending: ${payload[1].value}</ Typography>
                   <Typography>Tianyi's Savings: ${payload[2].value}</ Typography>
-                  <Typography>Tianyi's Savings: ${payload[3].value}</ Typography>
+                  <Typography>Tianyi's Spending: ${payload[3].value}</ Typography>
                   <Typography>Combined Savings: ${payload[4].value}</ Typography>
                 </Box>
         );
