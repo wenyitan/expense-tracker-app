@@ -6,5 +6,9 @@ export const navMenuItems = [
     {
         title: "Expense Tracker",
         url: "/log-transactions",
+    },
+    {
+        title: "Weight Tracker",
+        url: "/weight-tracker"
     }
 ];
