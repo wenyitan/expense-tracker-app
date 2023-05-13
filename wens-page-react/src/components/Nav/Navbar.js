@@ -3,7 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import NavItem from './NavItem';
-import { navMenuItems } from '../navMenuItems';
+import { navMenuItems } from '../../navMenuItems';
 
 function Navbar() {
 
