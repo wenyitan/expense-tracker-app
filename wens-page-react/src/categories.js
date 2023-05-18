@@ -16,6 +16,7 @@ export const categoriesOut = [
     "Phone Bills",
     "Investments",
     "Shopping",
+    "Transport",
     "Misc",
     "Household amenities",
     "Parents",
