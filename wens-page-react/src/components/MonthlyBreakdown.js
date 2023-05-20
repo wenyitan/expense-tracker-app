@@ -68,8 +68,9 @@ function MonthlyBreakdown( {data} ) {
             cx="50%"
             cy="50%"
             minAngle= {5}
-            innerRadius={60}
-            outerRadius={100}
+            innerRadius={70}
+            outerRadius={120}
+            paddingAngle={1}
             fill="#8884d8"
             dataKey="categoryTotal"
             onMouseEnter={onPieEnter}

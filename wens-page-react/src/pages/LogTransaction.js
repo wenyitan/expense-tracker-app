@@ -136,7 +136,7 @@ function LogTransaction() {
         setAmountInput("");
         setCategory("");
         setType("out");
-        setTransactionDate(now);
+        // setTransactionDate(now);
         setRemarks("")
     }
 
@@ -160,17 +160,12 @@ function LogTransaction() {
                 console.log(response);
             }).catch((error)=>{
                 console.log(error);
-            }).finally( () => {
+            }).finally(() => {
                 resetForm();
                 getMonthTransaction();
             })
         }
-    }
-
-    function valuetext(value) {
-        return `${value}°C`;
-      }
-      
+    }    
 
     const getAllTransactions = () =>{
         axios.get("http://localhost:8000/transactions")
@@ -219,6 +214,7 @@ function LogTransaction() {
             }
         })
         .then((response)=> {
+            console.log("Month's transcation receievds");
             setMonthlyTransactions(response.data.transactions);
             let left = 0;
             response.data.transactions.forEach((transaction)=>{
@@ -260,8 +256,8 @@ function LogTransaction() {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", width: "100%", height: "100%", flexWrap: "wrap"}}>
-            <Box sx={{ marginTop: 3, width:"45%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
-                <Typography sx={{ marginTop: 1 }}variant="h3">{now.format("MMMM-YYYY").toString()}</Typography>
+            <Box sx={{ mx: 5, my: 3, width:"45%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
+                <Typography variant="h3">{now.format("MMMM-YYYY").toString()}</Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2, md: 4 }} sx={{ width: "100%", height: "75%" }}> 
                     <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "flex-start", width: "50%", height: 300}}>
                         <FormControl sx={{ marginTop: 2 }}>
@@ -335,7 +331,7 @@ function LogTransaction() {
                 </Stack>
                 <Button sx={{ marginBottom: 3, width: 150 }} variant="outlined" onClick={logTransaction}>Save Transaction</Button>
             </Box>
-            <Box sx={{ marginTop: 3, width:"45%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
+            <Box sx={{ mx: 5, my: 3, width:"45%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
                 <Typography variant="h5">Breakdown for <strong>{currentMonthView}</strong></Typography>
                 <Stack direction="row" spacing={2}>
                     <IconButton disabled={dayjs(currentMonthView, "MMM-YYYY").subtract(1, 'month').isBefore(dayjs().month(3).year(2023))} onClick={handleMonthSubtract}>
