@@ -16,6 +16,7 @@ import axios from 'axios';
 import MonthlyBreakdown from '../components/MonthlyBreakdown';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import MonthlyBreakdownTable from '../components/MonthlyBreakdownTable';
 import FormHelperText from '@mui/material/FormHelperText';
 import TransactionTable from '../components/TransactionTable';
 import PropTypes from 'prop-types';
@@ -371,8 +372,9 @@ function LogTransaction() {
                             sx={{ borderRight: 1, borderColor: 'divider' }}
                         >
                             <Tab label="Month's transaction record" {...a11yProps(0)} />
-                            <Tab label="Saving Trend" {...a11yProps(1)} />
-                            <Tab label="Item Three" {...a11yProps(2)} />
+                            
+                            <Tab label="Spending by Categories" {...a11yProps(1)} />
+                            <Tab label="Saving Trend" {...a11yProps(2)} />
                         </Tabs>
                         <TabPanel value={value} index={0}>
                             <Box sx={{ width: 1100, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
@@ -382,17 +384,16 @@ function LogTransaction() {
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             <Box sx={{ width: 1100, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
+                                <MonthlyBreakdownTable data={monthlyBreakdownData}/>
+                            </Box>
+                        </TabPanel>
+                        <TabPanel value={value} index={2}>
+                            <Box sx={{ width: 1100, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
                                 <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>Savings trend</strong></Typography>
                                 <MonthlyTrend trend={monthlyTrend.slice(monthlyTrend.length-6)}/>
                             </Box>
                         </TabPanel>
-                        <TabPanel value={value} index={2}>
-                            Item Three
-                            <Box sx={{ border: "1px solid black", width: 1100, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
 
-                            </Box>
-
-                        </TabPanel>
                     </Box>
                 </Paper>
             </Box>
