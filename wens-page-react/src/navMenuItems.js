@@ -10,5 +10,9 @@ export const navMenuItems = [
     {
         title: "Weight Tracker",
         url: "/weight-tracker"
+    },
+    {
+        title: "IBS Helper",
+        url: "/IBS-helper"
     }
 ];
