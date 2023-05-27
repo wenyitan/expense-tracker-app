@@ -13,7 +13,7 @@ function Navbar() {
             <Toolbar>
                 {navMenuItems.map((item, key) => {
                     return (
-                        <NavItem item={item} />
+                        <NavItem key={key} item={item} />
                     )
                 })}
             </Toolbar>
