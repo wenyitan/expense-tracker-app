@@ -34,6 +34,7 @@ const dayjs = require('dayjs')
 function LogTransaction() {
     const [ amountInput, setAmountInput ] = useState("");
     const [ amountInputError, setAmountInputError ] = useState(false);
+    const [ amountInputErrorMessage, setAmountInputErrorMessage ] = useState("");
     const [ remarks, setRemarks ] = useState("");
     const [ type, setType ] = useState("out");
     const [ person, setPerson ] = useState("Wen Yi")
@@ -41,10 +42,8 @@ function LogTransaction() {
     const [ monthlyBreakdownData, setMonthlyBreakdownData ] = useState([]);
     const [ switchChoice, setSwitchChoice ] = useState("Wen Yi");
     const [ categoryError, setCategoryError ] = useState(false);
-    const [ amountInputErrorMessage, setAmountInputErrorMessage ] = useState("");
     const [ monthlyTransactions, setMonthlyTransactions ] = useState([]);
     const [ monthlyTrend, setMonthlyTrend ] = useState([]);
-    const [ sliderValue, setSliderValue ] = useState(6);
 
     const [value, setValue] = useState(0);
 
@@ -149,9 +148,9 @@ function LogTransaction() {
             setCategoryError(true);
         }
         if (category !== "" && amountInput !== "") {
-            axios.post("http://127.0.0.1:8000/add-transaction", {
-                name: person,
-                type: type,
+            axios.post("http://localhost:9001/api/v1/expense-tracker/transactions", {
+                person: person,
+                transactionType: type,
                 amount: amountInput,
                 date: transactionDate.format("DD/MM/YYYY").toString(),
                 category: category,
@@ -168,9 +167,9 @@ function LogTransaction() {
     }    
 
     const getAllTransactions = () =>{
-        axios.get("http://localhost:8000/transactions")
+        axios.get("http://localhost:9001/api/v1/expense-tracker/transactions")
         .then((response)=> {
-            const allTransactions = response.data.transactions.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? 1 : -1})
+            const allTransactions = response.data.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? 1 : -1})
             const names = ["Wen Yi", "Tianyi"]
             const trend = [];
             let start = dayjs(allTransactions[0].date, "DD/MM/YYYY");
@@ -180,11 +179,11 @@ function LogTransaction() {
                     monthYear: start.format("MMM YYYY"),
                 }
                 names.forEach((name)=>{
-                    const transactions = monthTransactions.filter((transaction)=>{return transaction.name === name})
+                    const transactions = monthTransactions.filter((transaction)=>{return transaction.person === name})
                     let totalIncome = 0;
                     let totalExpense = 0;
                     transactions.forEach((transaction)=>{
-                        if (transaction.type === "in") {
+                        if (transaction.transactionType === "in") {
                             totalIncome += transaction.amount;
                         } else {
                             if (transaction.category !== "Savings") {
@@ -207,22 +206,22 @@ function LogTransaction() {
     
 
     const getMonthTransaction = () => {
-        axios.get("http://localhost:8000/transactions", {
+        axios.get("http://localhost:9001/api/v1/expense-tracker/transactions", {
             params: {
                 month_year: currentMonthView,
                 person: switchChoice
             }
         })
         .then((response)=> {
-            console.log("Month's transcation receievds");
-            setMonthlyTransactions(response.data.transactions);
+            console.log("Month's transcation received");
+            setMonthlyTransactions(response.data);
             let left = 0;
-            response.data.transactions.forEach((transaction)=>{
-                transaction.type === "in" ? left += transaction.amount : left -= transaction.amount
+            response.data.forEach((transaction)=>{
+                transaction.transactionType === "in" ? left += transaction.amount : left -= transaction.amount
             })
 
             let monthlyCategories = [];
-            response.data.transactions.filter((transaction)=>transaction.type === "out").forEach((transaction)=> {
+            response.data.filter((transaction)=>transaction.transactionType === "out").forEach((transaction)=> {
                 if (!monthlyCategories.includes(transaction.category)) {
                     monthlyCategories.push(transaction.category);
                 }
@@ -230,7 +229,7 @@ function LogTransaction() {
             let monthlyBreakdown = [];
             monthlyCategories.forEach((category)=>{
                 let total = 0;
-                response.data.transactions.filter((transaction)=>transaction.category === category).forEach((transaction)=>{
+                response.data.filter((transaction)=>transaction.category === category).forEach((transaction)=>{
                     total += transaction.amount;
                 })
                 monthlyBreakdown.push({category: category, categoryTotal: Math.round(total*100)/100});
@@ -252,7 +251,7 @@ function LogTransaction() {
 
     const handleSwitchChange = (event) => {
         event.target.checked ? setSwitchChoice("Tianyi") : setSwitchChoice("Wen Yi");
-      };
+    };
 
     return (
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", width: "100%", height: "100%", flexWrap: "wrap"}}>
@@ -375,7 +374,7 @@ function LogTransaction() {
                         <TabPanel value={value} index={0}>
                             <Box sx={{ width: 1100, height: 800, display: "flex", alignItems: "center", justifyContent: "flex-start", flexDirection: "column" }}>
                                 <Typography sx={{ marginBottom: 3, marginTop: 2 }} align="center"><strong>{currentMonthView}</strong>'s Transactions</Typography>
-                                <TransactionTable data={monthlyTransactions}/>
+                                <TransactionTable data={monthlyTransactions} toCall={getMonthTransaction}/>
                             </Box>
                         </TabPanel>
                         <TabPanel value={value} index={1}>
@@ -389,11 +388,9 @@ function LogTransaction() {
                                 <MonthlyTrend trend={monthlyTrend.slice(monthlyTrend.length-6)}/>
                             </Box>
                         </TabPanel>
-
                     </Box>
                 </Paper>
             </Box>
-            
         </Box>
     )
 }
