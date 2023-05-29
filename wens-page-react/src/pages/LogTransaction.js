@@ -169,6 +169,7 @@ function LogTransaction() {
     const getAllTransactions = () =>{
         axios.get("http://localhost:9001/api/v1/expense-tracker/transactions")
         .then((response)=> {
+            console.log(response.data);
             const allTransactions = response.data.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? 1 : -1})
             const names = ["Wen Yi", "Tianyi"]
             const trend = [];
@@ -255,7 +256,7 @@ function LogTransaction() {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-evenly", width: "100%", height: "100%", flexWrap: "wrap"}}>
-            <Box sx={{ mx: 5, my: 3, width:"45%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
+            <Box sx={{ mx: 5, my: 3, width:"35%", display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
                 <Typography variant="h3">{now.format("MMMM-YYYY").toString()}</Typography>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2, md: 4 }} sx={{ width: "100%", height: "75%" }}> 
                     <Box sx={{ display: "flex", flexDirection:"column", justifyContent: "center", alignItems: "flex-start", width: "50%", height: 300}}>

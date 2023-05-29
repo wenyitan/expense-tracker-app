@@ -59,8 +59,8 @@ function MonthlyBreakdown( {data} ) {
     };
 
     return (
-      <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={400} height={400}>
+      <ResponsiveContainer width="100%" height={350}>
+        <PieChart width={400} height={500}>
           <Pie
             activeIndex={activeIndex}
             activeShape={renderActiveShape}
