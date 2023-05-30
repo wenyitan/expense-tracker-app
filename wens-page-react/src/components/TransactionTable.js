@@ -107,8 +107,8 @@ const TransactionTable = ({data, toCall}) => {
     const sortByDateThenById = (transaction1, transaction2) => {
         if (dayjs(transaction1.date, "DD/MM/YYYY").isBefore(dayjs(transaction2.date, "DD/MM/YYYY"))) return 1
         if (dayjs(transaction1.date, "DD/MM/YYYY").isAfter(dayjs(transaction2.date, "DD/MM/YYYY"))) return -1 
-        if (transaction1.id > transaction2.id) return -1
-        if (transaction1.id < transaction2.id) return 1
+        if (transaction1.transactionId > transaction2.transactionId) return -1
+        if (transaction1.transactionId < transaction2.transactionId) return 1
     }
 
     const handleSaveChanges = () => {
