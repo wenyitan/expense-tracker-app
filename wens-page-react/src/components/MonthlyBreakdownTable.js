@@ -46,7 +46,19 @@ function MonthlyBreakdownTable ( {data} ) {
                         )}
                     <TableRow>
                         <TableCell align='right' colSpan={2}><strong>Total Spend:</strong></TableCell>
-                        <TableCell sx={{ paddingRight: 5 }} align='right'>${countTotal(data.filter((cat)=> {return cat.category !== "Savings"}))}</TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>${countTotal(data.filter((cat)=> {return (cat.category !== "Savings" && cat.category !== "Remaining")}))}</TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>{(countTotal(data.filter((cat)=> {return (cat.category !== "Savings" && cat.category !== "Remaining")}))*100/countTotal(data)).toFixed(2)}%</TableCell>
+
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align='right' colSpan={2}><strong>Total Savings:</strong></TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>${countTotal(data.filter((cat)=> {return (cat.category === "Savings" || cat.category === "Remaining")}))}</TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>{(countTotal(data.filter((cat)=> {return (cat.category === "Savings" || cat.category === "Remaining")}))*100/countTotal(data)).toFixed(2)}%</TableCell>
+                    </TableRow>
+                    <TableRow>
+                        <TableCell align='right' colSpan={2}><strong>Total Income:</strong></TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>${countTotal(data)}</TableCell>
+                        <TableCell sx={{ paddingRight: 5 }} align='right'>100.00%</TableCell>
                     </TableRow>
                 </TableBody>
 

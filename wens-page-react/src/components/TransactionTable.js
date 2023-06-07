@@ -186,7 +186,7 @@ const TransactionTable = ({data, toCall}) => {
                                     <TableCell align="center">${transaction.amount}</TableCell>
                                     <TableCell align="center">{dayjs(transaction.date, "DD/MM/YYYY").format("DD-MMM-YYYY").toString()}</TableCell>
                                     <TableCell align="center">{transaction.category}</TableCell>
-                                    <TableCell align="center">{transaction.remarks}</TableCell>
+                                    <TableCell sx={{width: 300}} align="center">{transaction.remarks}</TableCell>
                                     <TableCell align="center">
                                         <IconButton onClick={() => {handleEditClick(transaction.transactionId)}} size="small">
                                             <EditOutlinedIcon fontSize="small"/>

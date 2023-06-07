@@ -162,6 +162,7 @@ function LogTransaction() {
             }).finally(() => {
                 resetForm();
                 getMonthTransaction();
+                getAllTransactions();
             })
         }
     }    
@@ -170,9 +171,10 @@ function LogTransaction() {
         axios.get("http://localhost:9001/api/v1/expense-tracker/transactions")
         .then((response)=> {
             console.log(response.data);
-            const allTransactions = response.data.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? 1 : -1})
+            const allTransactions = response.data.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? -1 : 1})
             const names = ["Wen Yi", "Tianyi"]
             const trend = [];
+            console.log(allTransactions);
             let start = dayjs(allTransactions[0].date, "DD/MM/YYYY");
             while (start.isBefore(now)) {
                 const monthTransactions = allTransactions.filter((transaction)=>{return dayjs(transaction.date, "DD/MM/YYYY").isSame(start, 'month')});

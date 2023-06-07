@@ -6,7 +6,7 @@ function MonthlyTrend ({ trend }) {
 
     const formatTrend = () => {
         trend.forEach(element => {
-          element["totalSavings"] = element.wensTotalSavings + element.tiansTotalSavings;
+          element["totalSavings"] = (element.wensTotalSavings + element.tiansTotalSavings).toFixed(2);
         });
         return trend;
     }
