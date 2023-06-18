@@ -170,11 +170,11 @@ function LogTransaction() {
     const getAllTransactions = () =>{
         axios.get("http://localhost:9001/api/v1/expense-tracker/transactions")
         .then((response)=> {
-            console.log(response.data);
+            // console.log(response.data);
             const allTransactions = response.data.sort((a, b)=> {return dayjs(a.date, "DD/MM/YYYY").isBefore(dayjs(b.date, "DD/MM/YYYYY")) ? -1 : 1})
             const names = ["Wen Yi", "Tianyi"]
             const trend = [];
-            console.log(allTransactions);
+            // console.log(allTransactions);
             let start = dayjs(allTransactions[0].date, "DD/MM/YYYY");
             while (start.isBefore(now)) {
                 const monthTransactions = allTransactions.filter((transaction)=>{return dayjs(transaction.date, "DD/MM/YYYY").isSame(start, 'month')});
@@ -246,6 +246,7 @@ function LogTransaction() {
 
     useEffect(()=> {
         getAllTransactions();
+        
     }, []);
 
     useEffect(()=> {
@@ -341,7 +342,7 @@ function LogTransaction() {
                     </IconButton>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DemoContainer components={['DatePicker', 'DatePicker', 'DatePicker']}>
-                            <DatePicker minDate={dayjs().month(4).year(2023)} onChange={(newValue) => handleDateViewInput(newValue)} label={'Choose a month'} views={['month', 'year']} />
+                            <DatePicker minDate={dayjs().month(3).year(2023)} value={dayjs(currentMonthView, "MMM-YYYY")} maxDate={now} onChange={(newValue) => handleDateViewInput(newValue)} label={'Choose a month'} views={['month', 'year']} />
                             {/* <DatePicker minDate={dayjs().month(4).year(2023)} maxDate={now} onChange={(newValue) => handleDateViewInput(newValue)} label={'Choose a month'} views={['month', 'year']} /> */}
                         </DemoContainer>
                     </LocalizationProvider>
